@@ -2269,9 +2269,6 @@
           <div class="kicker">
             <span>WINTER INTENSIVE CAMP · GRADES 8, 9 &amp; 10</span>
             <span class="brand-dots" aria-hidden="true">
-              <span class="dot dot-charcoal"></span>
-              <span class="dot dot-forest"></span>
-              <span class="dot dot-lime"></span>
             </span>
           </div>
 
@@ -2390,9 +2387,6 @@
             <p>
               Markaz Knowledge City welcomes Grades 8, 9 &amp; 10 students to a vibrant three-day camp experience at WIRAS—combining Value-Based Living, Technology, Tilawat, Career Exploration, Mindscape Activities, and Educational Excursions.
             </p>
-            <button type="button" class="btn-primary" onclick="openStoryModal(state.storyIndex % state.stories.length)">
-              Know More
-            </button>
           </div>
         </div>
       </section>
@@ -2482,7 +2476,7 @@
               </div>
             </div>
             <div style="margin: 4px 0 14px; font-size:0.9rem; color:var(--charcoal);">
-              <strong>Camp fee : ₹2500</strong> <span style="font-weight:400; color:var(--charcoal-65);">(Pay Amount Through whatsapp)</span>
+              <strong>Camp fee : ₹2500</strong> <span style="font-weight:400; color:var(--charcoal-65); ">(Pay Through whatsapp)</span>
             </div>
             <button type="submit" class="btn-submit-full">Submit Registration</button>
           </form>
@@ -2545,61 +2539,7 @@
     </div>
   </div>
 
-  <!-- Edit Student Modal -->
-  <div class="modal-backdrop" id="editStudentModal" role="dialog" aria-modal="true">
-    <div class="modal-box" style="max-width:560px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <span class="badge-pill badge-forest">EDIT STUDENT</span>
-        <button type="button" class="filter-chip" onclick="closeEditStudentModal()">Close</button>
-      </div>
-      <form id="editStudentForm" onsubmit="saveEditedStudent(event)">
-        <input type="hidden" id="editStuId" />
-        <div class="form-group">
-          <label class="form-label" for="editStuName">NAME</label>
-          <input id="editStuName" class="form-input" type="text" required />
-        </div>
-        <div class="cards-grid-2" style="gap:12px;">
-          <div class="form-group">
-            <label class="form-label" for="editStuDob">DATE OF BIRTH</label>
-            <input id="editStuDob" class="form-input" type="date" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="editStuPlace">PLACE</label>
-            <input id="editStuPlace" class="form-input" type="text" required />
-          </div>
-        </div>
-        <div class="cards-grid-2" style="gap:12px;">
-          <div class="form-group">
-            <label class="form-label" for="editStuGender">GENDER</label>
-            <select id="editStuGender" class="form-select" required>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="editStuClass">CLASS</label>
-            <select id="editStuClass" class="form-select" required>
-              <option value="Class 8">Class 8</option>
-              <option value="Class 9">Class 9</option>
-              <option value="Class 10">Class 10</option>
-            </select>
-          </div>
-        </div>
-        <div class="cards-grid-2" style="gap:12px;">
-          <div class="form-group">
-            <label class="form-label" for="editStuWhatsapp">WHATSAPP NUMBER</label>
-            <input id="editStuWhatsapp" class="form-input" type="tel" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="editStuContact">CONTACT NUMBER</label>
-            <input id="editStuContact" class="form-input" type="tel" required />
-          </div>
-        </div>
-        <button type="submit" class="btn-submit-full">Save Changes</button>
-      </form>
-    </div>
-  </div>
+ 
 
   <!-- Event Feedback Modal -->
   <div class="modal-backdrop" id="eventFeedbackModal" role="dialog" aria-modal="true">
@@ -2665,7 +2605,7 @@
       eventFeedbackDraftRating: 0,
       publicScheduleGender: 'Boys',
       certFilter: 'All',
-      reminderMessage: 'Assalamu Alaikum,\nThis is a gentle reminder from Kuppayam 3.0 (Winter Intensive Camp²⁶ - WIRAS, Markaz Knowledge City). Your camp registration payment is still pending. Please complete your payment at the earliest to confirm your seat and receive your Register Number.\n\n©️ WIRAS • Markaz Knowledge City',
+      reminderMessage: 'السلام عليكم ورحمة الله,\nYour camp registration payment is still pending. Please complete your payment at the earliest to confirm your seat and receive your Register Number.\n Payable Amount :  ₹2500 \n GPay No : +91 8943423485 \n©️  WIRAS • Markaz Knowledge City',
       attendanceDay: 1,
       studentScheduleDay: 1,
       boysSchedule: {
@@ -2708,11 +2648,6 @@
       },
       selectedRegId: null,
       nextRegSeq: 3001,
-      students: [
-        { id: 's1', regNo: 'K3001', paymentCompleted: true, verified: true, attendance: { 1: true, 2: false, 3: false }, dob: '2011-05-14', name: 'Muhammed Sinan', place: 'Kozhikode', gender: 'Male', studentClass: 'Class 9', whatsapp: '9876543210', contact: '9876543210', registeredEvents: ['ev1', 'ev3'] },
-        { id: 's2', regNo: '', paymentCompleted: false, verified: false, attendance: { 1: false, 2: false, 3: false }, dob: '2012-08-22', name: 'Aysha Rinsha', place: 'Malappuram', gender: 'Female', studentClass: 'Class 8', whatsapp: '9847012345', contact: '9847012345', registeredEvents: ['ev2', 'ev5'] },
-        { id: 's3', regNo: '', paymentCompleted: false, verified: false, attendance: { 1: false, 2: false, 3: false }, dob: '2010-11-03', name: 'Bilal Ahmad', place: 'Kannur', gender: 'Male', studentClass: 'Class 10', whatsapp: '9995112233', contact: '9995112233', registeredEvents: ['ev4'] }
-      ],
       stories: [
         { num: '01', date: '24 DEC 2026', title: 'Grand Inauguration', desc: 'Opening assembly at WIRAS, Markaz Knowledge City welcoming Grades 8, 9 & 10 campers.' },
         { num: '02', date: '25 DEC 2026', title: 'Tech & Mindscape Lab', desc: 'Hands-on AI, coding, and creative problem-solving workshops empowering young innovators.' },
@@ -3103,9 +3038,6 @@
                     </div>
                     <h4 style="font-size:1.05rem; font-weight:800;">${item.title}</h4>
                   </div>
-                  <button type="button" class="btn-secondary" style="padding:8px 16px; font-size:0.82rem; white-space:nowrap;" onclick="openEventFeedbackModal('${evKey}', '${safeTitle}')">
-                    ${savedFb ? 'Edit Feedback (★ ' + savedFb.rating + ')' : 'Write Feedback'}
-                  </button>
                 </div>
               `;
             }).join('')}
@@ -3672,7 +3604,6 @@
                 </svg>
               </button>
               <div class="row-dropdown" id="stuMenu_${stu.id}">
-                <button type="button" class="row-dropdown-item" onclick="openEditStudentModal('${stu.id}')">Edit</button>
                 <button type="button" class="row-dropdown-item danger" onclick="deleteAdminStudent('${stu.id}')">Delete</button>
               </div>
             </div>
@@ -3857,7 +3788,7 @@
               <h2 style="font-size:2rem; font-weight:800; margin-top:10px;">${s.name}</h2>
               <p style="color:var(--white-85);">${s.studentClass} · ${s.place} · ${s.gender || 'Male'}</p>
             </div>
-            <button type="button" class="btn-primary" onclick="logoutUser()">Sign Out</button>
+            <button type="button" class="btn-primary" onclick="logoutUser()">Log Out</button>
           </div>
 
           <div class="cards-grid-2" style="gap:24px; align-items:stretch;">
@@ -3961,9 +3892,7 @@
               <div>
                 <div style="padding: 4px 8px 16px; border-bottom: 1px solid var(--charcoal-12); margin-bottom: 14px;">
                   <div style="font-size:1.1rem; font-weight:800; color:var(--forest);">Kuppayam <span style="color:var(--charcoal);">Portal</span></div>
-                  <span class="badge-pill badge-lime" style="margin-top:6px;">Camp Coordinator</span>
                 </div>
-                <div style="font-size:0.7rem; font-weight:800; letter-spacing:0.14em; color:var(--charcoal-65); padding:0 10px 8px;">MANAGE</div>
                 <button type="button" class="portal-nav-btn ${state.adminTab === 'students' ? 'active' : ''}" onclick="setAdminTab('students')">
                   Registered Students (${total})
                 </button>
@@ -3982,8 +3911,7 @@
               </div>
 
               <div style="border-top: 1px solid var(--charcoal-12); padding-top: 14px;">
-                <div style="font-size:0.84rem; font-weight:800; margin-bottom:10px; padding:0 6px;">WIRAS Admin</div>
-                <button type="button" class="btn-submit-full" style="padding:10px 14px; font-size:0.86rem;" onclick="logoutUser()">Sign out</button>
+                <button type="button" class="btn-submit-full" style="padding:10px 14px; font-size:0.86rem;" onclick="logoutUser()">Log Out</button>
               </div>
             </aside>
 
@@ -3994,10 +3922,6 @@
                   <h2 style="font-size:1.8rem; font-weight:800; line-height:1.15;">Kuppayam 3.0 Students</h2>
                   <p style="font-size:0.88rem; color:var(--charcoal-65); margin-top:4px;">Select any student to inspect their details, verify payment, and generate their Register Number (e.g. K3001).</p>
                   ${window.location.protocol === 'file:' ? `
-                    <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-                      <input id="qrSiteUrlInput" class="form-input" style="flex:1; min-width:220px; padding:8px 12px; font-size:0.84rem;" placeholder="Paste your live https:// website URL for QR auto-login..." value="${localStorage.getItem('kuppayam_site_url') || ''}" />
-                      <button type="button" class="btn-secondary" style="padding:8px 14px; font-size:0.82rem;" onclick="saveQrSiteUrl(document.getElementById('qrSiteUrlInput').value)">Save QR URL</button>
-                    </div>
                   ` : ''}
                 </div>
 
