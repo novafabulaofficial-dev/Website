@@ -3301,12 +3301,26 @@
       showToast(checked ? 'Payment message marked sent.' : 'Payment message unmarked.');
     }
 
+    function saveQrSiteUrl(val) {
+      localStorage.setItem('kuppayam_site_url', (val || '').trim());
+      showToast('QR Website URL saved!');
+    }
+
     function getStudentAutoLoginUrl(stu) {
+      const savedUrl = (localStorage.getItem('kuppayam_site_url') || '').trim();
       const rawHref = window.location.href.split('?')[0].split('#')[0];
-      const base = (typeof SITE_BASE_URL !== 'undefined' && SITE_BASE_URL.trim())
-        ? SITE_BASE_URL.trim()
-        : rawHref;
-      return base + '?autologin=' + encodeURIComponent(stu.regNo || '') + '&dob=' + encodeURIComponent(stu.dob || '');
+      const base = savedUrl
+        ? savedUrl
+        : ((typeof SITE_BASE_URL !== 'undefined' && SITE_BASE_URL.trim()) ? SITE_BASE_URL.trim() : rawHref);
+      const params = new URLSearchParams({
+        autologin: stu.regNo || '',
+        dob: stu.dob || '',
+        n: stu.name || '',
+        c: stu.studentClass || '',
+        p: stu.place || '',
+        g: stu.gender || 'Male'
+      });
+      return base + '?' + params.toString();
     }
 
     function generateStudentIdCardDataUrl(stu) {
@@ -3380,19 +3394,20 @@
       ctx.fill();
 
       if (typeof qrcode !== 'undefined') {
-        const qr = qrcode(0, 'M');
+        const qr = qrcode(0, 'L');
         qr.addData(loginUrl);
         qr.make();
         const count = qr.getModuleCount();
-        const qrSize = 270;
-        const cell = qrSize / count;
-        const startX = 235 + (330 - qrSize) / 2;
-        const startY = 580 + (330 - qrSize) / 2;
-        ctx.fillStyle = '#013F32';
+        const qrSize = 256;
+        const cell = Math.floor(qrSize / count);
+        const actualSize = cell * count;
+        const startX = 235 + Math.floor((330 - actualSize) / 2);
+        const startY = 580 + Math.floor((330 - actualSize) / 2);
+        ctx.fillStyle = '#000000';
         for (let r = 0; r < count; r++) {
           for (let c = 0; c < count; c++) {
             if (qr.isDark(r, c)) {
-              ctx.fillRect(startX + c * cell, startY + r * cell, Math.ceil(cell), Math.ceil(cell));
+              ctx.fillRect(startX + c * cell, startY + r * cell, cell, cell);
             }
           }
         }
@@ -3461,46 +3476,32 @@
         'Class :: ' + stu.studentClass,
         'WhatsApp Number :: ' + stu.whatsapp,
         'Contact Number :: ' + stu.contact,
-        'Paymant Status :: ' + (stu.paymentCompleted ? '✅' : 'Pending'),
+        'Paymant Status :: ' + (stu.paymentCompleted ? '\u2705' : 'Pending'),
         '',
-        '©️ *WIRAS • Markaz Knowledge City*'
+        '\u00A9\uFE0F *WIRAS • Markaz Knowledge City*'
       ].join('\n');
       const idCardDataUrl = generateStudentIdCardDataUrl(stu);
-      const fileName = 'Kuppayam_ID_Card_' + (stu.regNo || stu.name) + '.png';
+      const waUrl = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(paymentMsg);
 
-      // Download PNG + copy image to clipboard so admin can press Ctrl+V in WhatsApp
-      const dlLink = document.createElement('a');
-      dlLink.download = fileName;
-      dlLink.href = idCardDataUrl;
-      dlLink.click();
+      const finishOpenWhatsApp = (copied) => {
+        stu.paymentMsgSent = true;
+        saveStudentsToStorage();
+        showToast(copied
+          ? 'ID Card copied! Press Ctrl+V in WhatsApp to paste and send it.'
+          : 'Opening WhatsApp — use Preview ID Card to save/attach the image.');
+        window.open(waUrl, '_blank', 'noopener');
+        renderAuth();
+      };
 
-      fetch(idCardDataUrl)
-        .then(r => r.blob())
-        .then(async (blob) => {
-          if (navigator.clipboard && window.ClipboardItem) {
-            try {
-              await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-            } catch (e) {}
-          }
-          const file = new File([blob], fileName, { type: 'image/png' });
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-              await navigator.share({ files: [file], text: paymentMsg });
-              return;
-            } catch (e) {}
-          }
-          const waUrl = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(paymentMsg);
-          window.open(waUrl, '_blank', 'noopener');
-        })
-        .catch(() => {
-          const waUrl = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(paymentMsg);
-          window.open(waUrl, '_blank', 'noopener');
-        });
-
-      stu.paymentMsgSent = true;
-      saveStudentsToStorage();
-      showToast('ID Card image copied & downloaded! Press Ctrl+V (or attach it) in WhatsApp.');
-      renderAuth();
+      if (navigator.clipboard && window.ClipboardItem) {
+        fetch(idCardDataUrl)
+          .then(r => r.blob())
+          .then(blob => navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]))
+          .then(() => finishOpenWhatsApp(true))
+          .catch(() => finishOpenWhatsApp(false));
+      } else {
+        finishOpenWhatsApp(false);
+      }
     }
 
     function getReminderMessageText() {
@@ -3992,6 +3993,12 @@
                   <div class="section-kicker" style="margin-bottom:4px;">REGISTRATIONS</div>
                   <h2 style="font-size:1.8rem; font-weight:800; line-height:1.15;">Kuppayam 3.0 Students</h2>
                   <p style="font-size:0.88rem; color:var(--charcoal-65); margin-top:4px;">Select any student to inspect their details, verify payment, and generate their Register Number (e.g. K3001).</p>
+                  ${window.location.protocol === 'file:' ? `
+                    <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                      <input id="qrSiteUrlInput" class="form-input" style="flex:1; min-width:220px; padding:8px 12px; font-size:0.84rem;" placeholder="Paste your live https:// website URL for QR auto-login..." value="${localStorage.getItem('kuppayam_site_url') || ''}" />
+                      <button type="button" class="btn-secondary" style="padding:8px 14px; font-size:0.82rem;" onclick="saveQrSiteUrl(document.getElementById('qrSiteUrlInput').value)">Save QR URL</button>
+                    </div>
+                  ` : ''}
                 </div>
 
                 <div class="portal-stats-4">
@@ -4417,15 +4424,32 @@
       const autoReg = (urlParams.get('autologin') || '').trim().toUpperCase();
       const autoDob = (urlParams.get('dob') || '').trim();
       if (autoReg && autoDob) {
-        const matched = state.students.find(s => s.regNo && s.regNo.toUpperCase() === autoReg && s.dob === autoDob);
-        if (matched) {
-          state.loggedInUser = { role: 'student', data: matched };
-          state.overallDraftRating = matched.overallFeedback ? matched.overallFeedback.rating : 0;
-          const navLbl = document.getElementById('navAuthLabel');
-          if (navLbl) navLbl.textContent = matched.regNo;
-          openLoginPage();
-          showToast('QR Verified! Welcome, ' + matched.name + '!');
+        let matched = state.students.find(s => s.regNo && s.regNo.toUpperCase() === autoReg && s.dob === autoDob);
+        if (!matched) {
+          matched = {
+            id: 'qr_' + autoReg,
+            regNo: autoReg,
+            paymentCompleted: true,
+            verified: true,
+            attendance: { 1: false, 2: false, 3: false },
+            dob: autoDob,
+            name: (urlParams.get('n') || 'Student').trim(),
+            studentClass: (urlParams.get('c') || '').trim(),
+            place: (urlParams.get('p') || '').trim(),
+            gender: (urlParams.get('g') || 'Male').trim(),
+            whatsapp: '',
+            contact: '',
+            registeredEvents: []
+          };
+          state.students.push(matched);
+          saveStudentsToStorage();
         }
+        state.loggedInUser = { role: 'student', data: matched };
+        state.overallDraftRating = matched.overallFeedback ? matched.overallFeedback.rating : 0;
+        const navLbl = document.getElementById('navAuthLabel');
+        if (navLbl) navLbl.textContent = matched.regNo;
+        openLoginPage();
+        showToast('QR Verified! Welcome, ' + matched.name + '!');
       }
       renderAuth();
     }
