@@ -3192,7 +3192,7 @@
         return;
       }
       const waNumber = digits.length === 10 ? '91' + digits : digits;
-      const welcomeMsg = 'السلام عليكم ورحمة الله\n\nThank you for registering for the Kuppayam 3.0 Camp. We appreciate your interest and support.\n\nYour camp registration payment is still pending. Please complete your payment at the earliest to confirm your seat and receive your Register Number.\n\n Payable Amount :  ₹2500 \n GPay No : +91 8943423485 \n\nWIRAS • Markaz Knowledge City';
+      const welcomeMsg = "Thank you for registering for the Kuppayam Residential Camp!\n\nWe're delighted to have you with us.\n\nWe kindly request you to pay the camp fee of ₹2,500, covering 3-day food and accommodation, at your earliest convenience so that we can proceed with the further arrangements.\n\nThank you for your cooperation and support!\n\nWIRAS • Markaz Knowledge City";
       const waUrl = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(welcomeMsg);
       stu.welcomeSent = true;
       saveStudentsToStorage();
