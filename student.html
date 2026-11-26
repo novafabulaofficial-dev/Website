@@ -3648,6 +3648,46 @@
       renderEventModalStars();
     }
 
+    function setOverallDraftRating(r) {
+      state.overallDraftRating = r;
+      const row = document.getElementById('overallStarsRow');
+      if (row) {
+        const btns = row.querySelectorAll('.star-box');
+        btns.forEach((btn, idx) => {
+          if (idx < r) btn.classList.add('active');
+          else btn.classList.remove('active');
+        });
+      }
+      const countEl = document.getElementById('overallStarCount');
+      if (countEl) countEl.textContent = r + ' of 5 stars';
+    }
+
+    function submitOverallFeedback(e) {
+      e.preventDefault();
+      if (!state.loggedInUser || state.loggedInUser.role !== 'student') return;
+      const stu = state.loggedInUser.data;
+      const rating = state.overallDraftRating || (stu.overallFeedback ? stu.overallFeedback.rating : 0);
+      if (!rating) {
+        showToast('Please select a star rating (1 to 5 stars).');
+        return;
+      }
+      const textEl = document.getElementById('overallFeedbackText');
+      const text = textEl ? textEl.value.trim() : '';
+      if (!text) {
+        showToast('Please write your feedback before submitting.');
+        return;
+      }
+      stu.overallFeedback = {
+        rating,
+        text,
+        updatedAt: new Date().toLocaleString()
+      };
+      state.overallDraftRating = rating;
+      saveStudentsToStorage();
+      showToast('Overall feedback submitted!');
+      renderAuth();
+    }
+
     function submitEventFeedback(e) {
       e.preventDefault();
       if (!state.loggedInUser || state.loggedInUser.role !== 'student') return;
